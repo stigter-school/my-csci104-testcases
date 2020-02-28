@@ -226,3 +226,64 @@ TEST_F(ArrayListTest, priorityRemoveTest) {
 	EXPECT_EQ(list.getNormalVal(8,0), "8a");
 	EXPECT_THROW(list.getNormalVal(9,0), std::out_of_range);
 }
+
+TEST_F(ArrayListTest, removeEverything)
+{
+    prioritySetUp();
+
+    //Add a few more priority values
+    list.push_back(7, "7a", true);
+    list.push_back(8, "8a", true);
+    list.push_back(9, "9a", true);
+
+    //this is the first round of removing
+    EXPECT_NO_THROW(list.remove(0, 0));
+    EXPECT_NO_THROW(list.remove(1, 0));
+    EXPECT_NO_THROW(list.remove(2, 0));
+    EXPECT_NO_THROW(list.remove(3, 0));
+    EXPECT_NO_THROW(list.remove(4, 0));
+    EXPECT_NO_THROW(list.remove(7, 0));
+    EXPECT_NO_THROW(list.remove(8, 0));
+    EXPECT_NO_THROW(list.remove(9, 0));
+
+    //adding back
+    list.push_back(0, "0a", true);
+    list.push_back(1, "1a", false);
+    list.push_back(2, "2a", true);
+    list.push_back(3, "3a", false);
+    list.push_back(4, "4a", true);
+    list.push_back(7, "7a", true);
+    list.push_back(8, "8a", true);
+    list.push_back(9, "9a", true);
+
+    //Check values
+    EXPECT_EQ(list.getPriorityVal(0), "0a");
+    EXPECT_EQ(list.getPriorityVal(1), "2a");
+    EXPECT_EQ(list.getPriorityVal(2), "4a");
+    EXPECT_EQ(list.getPriorityVal(3), "7a");
+    EXPECT_EQ(list.getPriorityVal(4), "8a");
+    EXPECT_EQ(list.getPriorityVal(5), "9a");
+    EXPECT_EQ(list.numPriorityItems(), 6);
+
+    //Remove priority values
+    EXPECT_NO_THROW(list.remove(0, 0));
+    EXPECT_NO_THROW(list.remove(7, 0));
+    EXPECT_NO_THROW(list.remove(9, 0));
+
+    //Check priority values
+    EXPECT_THROW(list.getPriorityVal(3), std::out_of_range);
+    EXPECT_EQ(list.getPriorityVal(0), "2a");
+    EXPECT_EQ(list.getPriorityVal(1), "4a");
+    EXPECT_EQ(list.getPriorityVal(2), "8a");
+    EXPECT_EQ(list.numPriorityItems(), 3);
+
+    //Check all normal values
+    EXPECT_THROW(list.getNormalVal(0, 0), std::out_of_range);
+    EXPECT_EQ(list.getNormalVal(1, 0), "1a");
+    EXPECT_EQ(list.getNormalVal(2, 0), "2a");
+    EXPECT_EQ(list.getNormalVal(3, 0), "3a");
+    EXPECT_EQ(list.getNormalVal(4, 0), "4a");
+    EXPECT_THROW(list.getNormalVal(7, 0), std::out_of_range);
+    EXPECT_EQ(list.getNormalVal(8, 0), "8a");
+    EXPECT_THROW(list.getNormalVal(9, 0), std::out_of_range);
+}
